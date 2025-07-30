@@ -1,0 +1,254 @@
+//import { rentalDays, calculateRentalPrice, carCategoryMapper } from "../utilities/common/rentalUtility"import { json } from "express";
+const { sql } = require("../db");
+const rentalUtility = require("../utilities/common/rentalUtility.js");
+const taxRate = 15; // Default value
+// Get all bookings
+async function getAllBooking(req, res) {
+  try {
+    const result = await sql.query("SELECT top 1 * FROM Booking");
+    res.json(result.recordset);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+}
+
+// Get Booking by ID
+async function getBookingById(req, res) {
+  try {
+    const { id } = req.params;
+    const result =
+      await sql.query`SELECT * FROM booking WHERE bookingid = ${id}`;
+    res.json(result.recordset[0] || {});
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+}
+
+// Get Car Availability
+async function getCarAvailability(req, res) {
+  try {
+    const pickUpDate = req.body.pickUpDate;
+    const dropOffDate = req.body.returnDate;
+    const pickUpLocation = req.body.pickUpLocation;
+    const dropOffLocation = req.body.returnLocation;
+    const rateCode = req.body.rateCode;
+    const language = req.body.language;
+    const customerNumber = req.body.customerNumber;
+    // const daysToRent = rentalDays(pickUpDate, dropOffDate);
+    const request = new sql.Request();
+
+    // Add parameters for the stored procedure
+    request.input("date", sql.Date, pickUpDate);
+
+    // Execute the stored procedure
+    const result = await request.execute("spGetCarAvailability");
+    let id = 0;
+    let jsonObject = {};
+    if (result.recordset.length > 0) {
+      result.recordset.forEach((record) => {
+        // Calculate rental Days
+        const daysToRent = rentalUtility.rentalDays(pickUpDate, dropOffDate);
+        const totalRentalPrice = daysToRent * `${record.Price}`;
+
+        jsonObject[id++] = {
+          status: "Available",
+          name: `${record.Model}`,
+          groupCode: `${record.GroupCode}`,
+          sippCode: null,
+          description: `${record.CategoryDescription}`,
+          seats: 5,
+          bags: 2,
+          doors: 4,
+          manualTransmission: false,
+          airConditioning: true,
+          currency: "EUR",
+          totalValue: totalRentalPrice,
+          vehicleValue: totalRentalPrice,
+          valueWithoutTax:
+            totalRentalPrice - (taxRate / 100) * totalRentalPrice,
+          taxValue: totalRentalPrice * (taxRate / 100),
+          taxRate: taxRate,
+          oneWayCharge: 0,
+          outOfHoursCharge: 0,
+        };
+      });
+      res.status(201).json(jsonObject);
+    } else res.status(201).json({});
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+}
+
+// Create a new Booking
+async function createBooking(req, res) {
+  try {
+    // Extract data from request body
+    const driverName = req.body.driverData.name;
+    const flightNumber = req.body.flightNumber;
+    const pickUpDate = req.body.pickUpDate;
+    const dropOffDate = req.body.returnDate;
+    const externalReference = req.body.externalReference;
+    const groupCode = req.body.groupCode;
+    const rateCode = req.body.rateCode;
+    const customerNumber = req.body.customerNumber;
+
+    const rentalPrice = rentalUtility.calculateRentalPrice(
+      groupCode,
+      pickUpDate,
+      dropOffDate
+    );
+
+    const carCategory = rentalUtility.carCategoryMapper(groupCode);
+    const daysToRent = rentalUtility.rentalDays(pickUpDate, dropOffDate);
+    const totalRentalPrice = daysToRent * rentalPrice;
+    const carCategoryName = rentalUtility.carCategoryName(groupCode);
+
+    const { CreatedBy = "API", CreatedOn } = req.body;
+
+    // Create a new request
+    const request = new sql.Request();
+
+    // Add parameters to avoid SQL injection
+    request.input("CustomerName", sql.NVarChar, driverName);
+    request.input("ContactDetails", sql.NVarChar, driverName);
+    request.input("PickUpDate", sql.DateTime, pickUpDate);
+    request.input("DropOffDate", sql.DateTime, dropOffDate);
+    request.input("ReferenceNo", sql.NVarChar, externalReference);
+    request.input("FlightNo", sql.NVarChar, flightNumber);
+    request.input("Price", sql.NVarChar, rentalPrice.toString());
+    request.input("SpecialRequest", sql.NVarChar, "");
+    request.input("Login", sql.NVarChar, "admin-api");
+    request.input("Insurance", sql.NVarChar, "");
+    request.input("PaymentMethod", sql.NVarChar, "");
+    request.input("IsGps", sql.Bit, false);
+    request.input("IsCarSeat", sql.Bit, false);
+    request.input("IsBoosterSeat", sql.Bit, false);
+    request.input("DropOffPlace", sql.NVarChar, "");
+    request.input("NumberOfDays", sql.Int, daysToRent);
+    request.input("CategoryId", sql.Int, carCategory);
+    request.input("Currency", sql.NVarChar, "EUR");
+
+    // Execute the stored procedure
+    const result = await request.execute("spAddBookingDetails");
+
+    let jsonObject = {
+      reservationNumber: externalReference,
+      externalReference: externalReference,
+      status: {
+        slug: "Pending",
+      },
+      creationDate: new Date().toString(),
+      pickUpDate: pickUpDate,
+      returnDate: dropOffDate,
+      pickUpLocation: {
+        id: 5,
+        name: "SSRN Airport, MAU",
+      },
+      returnLocation: {
+        id: 5,
+        name: "SSRN Airport, MAU",
+      },
+      vehicleGroup: {
+        name: carCategoryName,
+        groupCode: groupCode,
+      },
+      driver: {
+        customerNumber: externalReference,
+        name: driverName,
+      },
+      secondDrivers: [],
+      rate: {
+        name: null,
+        code: null,
+      },
+      flightNumber: flightNumber,
+      voucher: externalReference,
+      voucherType: "MC",
+      items: [
+        {
+          type: "vehicle",
+          pickUpDate: pickUpDate,
+          returnDate: dropOffDate,
+          numberOfDays: daysToRent,
+          quantity: 1,
+          totalValue: totalRentalPrice,
+          vehicleValue: totalRentalPrice,
+          valueWithoutTax:
+            totalRentalPrice - (taxRate / 100) * totalRentalPrice,
+          taxValue: totalRentalPrice * (taxRate / 100),
+          taxRate: 15,
+        },
+      ],
+      useLoyaltycard: false,
+      totalValue: totalRentalPrice,
+      vehicleValue: totalRentalPrice,
+      valueWithoutTax: totalRentalPrice - (taxRate / 100) * totalRentalPrice,
+      taxValue: totalRentalPrice * (taxRate / 100),
+      taxRate: 15,
+    };
+
+    //await sql.query`INSERT INTO Booking (CustomerName, PickupDate, DropoffDate, ReferenceNo, CreatedBy, CreatedOn) VALUES (${CustomerName}, ${PickupDate}, ${DropOffDate}, ${ReferenceNumber}, ${CreatedBy}, ${CreatedOn})`;
+    res.status(201).json({ jsonObject });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+}
+
+// Update a Booking
+async function updateBooking(req, res) {
+  try {
+    // Create a new request
+    const request = new sql.Request();
+
+    // Add parameters to avoid SQL injection
+    const { name, email } = req.body;
+    await sql.query`UPDATE Users SET name = ${name}, email = ${email} WHERE id = ${id}`;
+    res.json({ message: "User updated" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+}
+
+// Cancel a Booking
+async function cancelBooking(req, res) {
+  try {
+    const rateCode = req.body.rateCode;
+    const customerNumber = req.body.customerNumber;
+    const reservationNumber = req.body.reservationNumber;
+    const externalReference = req.body.externalReference;
+
+    if (externalReference != undefined) {
+      const { lastModifiedTimeStamp, lastModifiedUserId = "admin-api" } =
+        req.body;
+      const request = new sql.Request();
+      request.input("lastModifiedTimeStamp", sql.DateTime, new Date());
+      request.input("lastModifiedUserId", sql.NVarChar, lastModifiedUserId);
+      const result =
+        await request.query`UPDATE Booking SET isActive = 0, AdditionalComments='Cancelled By API', lastModifiedTimeStamp = ${lastModifiedTimeStamp}, lastModifiedUserId = ${lastModifiedUserId} WHERE ExternalReference = ${externalReference}`;
+      res.json({ status: { slug: "Cancelled" } });
+    }
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+}
+
+// Delete a Booking
+async function deleteBooking(req, res) {
+  try {
+    const { id } = req.params;
+    await sql.query`DELETE FROM Users WHERE id = ${id}`;
+    res.json({ message: "User deleted" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+}
+
+module.exports = {
+  getAllBooking,
+  getBookingById,
+  getCarAvailability,
+  createBooking,
+  updateBooking,
+  cancelBooking,
+  deleteBooking,
+};
