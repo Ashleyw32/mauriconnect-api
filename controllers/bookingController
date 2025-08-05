@@ -190,6 +190,7 @@ async function createBooking(req, res) {
     //await sql.query`INSERT INTO Booking (CustomerName, PickupDate, DropoffDate, ReferenceNo, CreatedBy, CreatedOn) VALUES (${CustomerName}, ${PickupDate}, ${DropOffDate}, ${ReferenceNumber}, ${CreatedBy}, ${CreatedOn})`;
     res.status(201).json({ jsonObject });
   } catch (err) {
+    logError(err);
     res.status(500).json({ error: err.message });
   }
 }
@@ -243,6 +244,110 @@ async function deleteBooking(req, res) {
   }
 }
 
+// New Order from Webhooks
+
+async function newOrder(req, res) {
+  try {
+    const { orderData } = req.body;
+
+    const driverName =
+      req.body.billing.first_name + " " + req.body.billing.last_name;
+    const contactDetails =
+      req.body.billing.phone + " " + req.body.billing.email;
+    const pickUpDate = req.body.meta_data.filter(
+      (data) => data.key == "order_pickup_date"
+    )[0].value;
+    const dropOffDate = req.body.meta_data.filter(
+      (data) => data.key == "order_drop_date"
+    )[0].value;
+    const reference = req.body.id;
+    const totalPrice = req.body.total;
+    const currency = req.body.currency;
+    let optionList = "";
+    const options = req.body.meta_data.filter(
+      (data) => data.key == "order_car"
+    )[0].value.options_list;
+    for (let key in options) {
+      optionList += " " + options[key];
+    }
+    //const flightNumber = req.body.meta_data.filter(data=>data.key=="order_flight_number")[0].value;
+    const daysToRent = req.body.meta_data.filter(
+      (data) => data.key == "order_car_date"
+    )[0].value.order_days;
+
+    const insurance = req.body.line_items.filter(
+      (data) => data.product_id == 696
+    )[0].price;
+
+    const carRequest = req.body.meta_data.filter(
+      (data) => data.key == "order_car"
+    )[0].value.car_class.name;
+
+    // Create a new request
+    const request = new sql.Request();
+
+    // Add parameters to avoid SQL injection
+    request.input("CustomerName", sql.NVarChar, driverName);
+    request.input("ContactDetails", sql.NVarChar, contactDetails);
+    request.input("PickUpDate", sql.DateTime, new Date(pickUpDate));
+    request.input("DropOffDate", sql.DateTime, new Date(dropOffDate));
+    request.input("ReferenceNo", sql.NVarChar, "MU-" + reference.toString());
+    request.input("FlightNo", sql.NVarChar, "");
+    request.input("Price", sql.NVarChar, totalPrice.toString());
+    request.input(
+      "SpecialRequest",
+      sql.NVarChar,
+      optionList + " | " + carRequest
+    );
+    request.input("Login", sql.NVarChar, "Mauriconnect-api");
+    request.input("Insurance", sql.NVarChar, insurance.toString());
+    request.input(
+      "PaymentMethod",
+      sql.NVarChar,
+      "Already Paid - Via Debit/Credit Card"
+    );
+    request.input("IsGps", sql.Bit, false);
+    request.input("IsCarSeat", sql.Bit, false);
+    request.input("IsBoosterSeat", sql.Bit, false);
+    request.input("DropOffPlace", sql.NVarChar, "");
+    request.input("NumberOfDays", sql.Int, daysToRent);
+    request.input("CategoryId", sql.Int, 3); //hardcoding to Intermediate for now
+    request.input("Currency", sql.NVarChar, currency);
+
+    // Execute the stored procedure
+    const result = await request.execute("spAddBookingDetails");
+    // Process the orderData and create a new order
+    res.status(201).json({ message: "New order created", order: orderData });
+  } catch (err) {
+    logError(err);
+    res.status(500).json({ error: err.message });
+  }
+}
+
+async function logError(err) {
+  console.error("Error occurred:", err);
+  // Additional error handling logic can be added here
+  try {
+    // Extract data from request body
+    const driverName = req.body.driverData.name;
+
+    // Create a new request
+    const request = new sql.Request();
+
+    // Add parameters to avoid SQL injection
+    request.input("MachineName", sql.NVarChar, "Mauriconnect Website");
+    request.input("UserName", sql.NVarChar, "API User");
+    request.input("Title", sql.DateTime, "API Error");
+    request.input("Message", sql.DateTime, err.message);
+
+    // Execute the stored procedure
+    const result = await request.execute("sp_Log_Error");
+
+    res.status(201).json({ jsonObject });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+}
 module.exports = {
   getAllBooking,
   getBookingById,
@@ -251,4 +356,5 @@ module.exports = {
   updateBooking,
   cancelBooking,
   deleteBooking,
+  newOrder,
 };
