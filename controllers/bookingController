@@ -257,9 +257,11 @@ async function newOrder(req, res) {
     const pickUpDate = req.body.meta_data.filter(
       (data) => data.key == "order_pickup_date"
     )[0].value;
+
     const dropOffDate = req.body.meta_data.filter(
       (data) => data.key == "order_drop_date"
     )[0].value;
+
     const reference = req.body.id;
     const totalPrice = req.body.total;
     const currency = req.body.currency;
@@ -275,11 +277,11 @@ async function newOrder(req, res) {
       (data) => data.key == "order_car_date"
     )[0].value.order_days;
 
-    const insurance = 0;
+    let insurance = 0;
     if (
       req.body.line_items.filter((data) => data.product_id == 696).length > 0
     ) {
-      const insurance = req.body.line_items.filter(
+      insurance = req.body.line_items.filter(
         (data) => data.product_id == 696
       )[0].price;
     }
@@ -294,8 +296,8 @@ async function newOrder(req, res) {
     // Add parameters to avoid SQL injection
     request.input("CustomerName", sql.NVarChar, driverName);
     request.input("ContactDetails", sql.NVarChar, contactDetails);
-    request.input("PickUpDate", sql.DateTime, new Date(pickUpDate));
-    request.input("DropOffDate", sql.DateTime, new Date(dropOffDate));
+    request.input("PickUpDate", sql.NVarChar, pickUpDate);
+    request.input("DropOffDate", sql.NVarChar, dropOffDate);
     request.input("ReferenceNo", sql.NVarChar, "MC-" + reference.toString());
     request.input("FlightNo", sql.NVarChar, "");
     request.input("Price", sql.NVarChar, totalPrice.toString());
@@ -347,10 +349,8 @@ async function logError(err) {
 
     // Execute the stored procedure
     const result = await request.execute("sp_Log_Error");
-
-    res.status(201).json({ jsonObject });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    throw new Error("Failed to log error: " + err.message);
   }
 }
 module.exports = {
