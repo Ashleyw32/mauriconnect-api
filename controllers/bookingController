@@ -253,7 +253,7 @@ async function newOrder(req, res) {
     const driverName =
       req.body.billing.first_name + " " + req.body.billing.last_name;
     const contactDetails =
-      req.body.billing.phone + " " + req.body.billing.email;
+      req.body.billing.email + " | " + req.body.billing.phone;
     const pickUpDate = req.body.meta_data.filter(
       (data) => data.key == "order_pickup_date"
     )[0].value;
@@ -291,7 +291,7 @@ async function newOrder(req, res) {
     request.input("ContactDetails", sql.NVarChar, contactDetails);
     request.input("PickUpDate", sql.DateTime, new Date(pickUpDate));
     request.input("DropOffDate", sql.DateTime, new Date(dropOffDate));
-    request.input("ReferenceNo", sql.NVarChar, "MU-" + reference.toString());
+    request.input("ReferenceNo", sql.NVarChar, "MC-" + reference.toString());
     request.input("FlightNo", sql.NVarChar, "");
     request.input("Price", sql.NVarChar, totalPrice.toString());
     request.input(
