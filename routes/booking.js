@@ -17,6 +17,6 @@ router.get("/carAvailability", authMiddleware, getCarAvailability);
 router.post("/NewBooking", authMiddleware, createBooking);
 //router.put("/:id", updateBooking);
 router.put("/CancelBooking", authMiddleware, cancelBooking);
-router.post("/NewOrder", authMiddleware, newOrder); //New booking endpoint from Webhooks mauriconnect website
+router.post("/NewOrder", newOrder); //New booking endpoint from Webhooks mauriconnect website
 
 module.exports = router;

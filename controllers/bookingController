@@ -275,9 +275,14 @@ async function newOrder(req, res) {
       (data) => data.key == "order_car_date"
     )[0].value.order_days;
 
-    const insurance = req.body.line_items.filter(
-      (data) => data.product_id == 696
-    )[0].price;
+    const insurance = 0;
+    if (
+      req.body.line_items.filter((data) => data.product_id == 696).length > 0
+    ) {
+      const insurance = req.body.line_items.filter(
+        (data) => data.product_id == 696
+      )[0].price;
+    }
 
     const carRequest = req.body.meta_data.filter(
       (data) => data.key == "order_car"
