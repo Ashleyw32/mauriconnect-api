@@ -49,6 +49,21 @@ function carCategoryName(groupCode) {
   }
 }
 
+function deriveCarCategory(price) {
+  let carCategory = 0;
+
+  if (price >= 18 && price < 23) {
+    carCategory = 1; // Mini
+  } else if (price >= 23 && price < 30) {
+    carCategory = 2; // Eco
+  } else if (price >= 30 && price < 40) {
+    carCategory = 3; // Intermediate
+  } else if (price > 40) {
+    carCategory = 4; // Full Size
+  }
+  return carCategory;
+}
+
 // function generateReferenceNumber(string prependix, string orderNumber) {
 // const now = new Date();
 // const year = now.getFullYear().toString().substr(-2);
@@ -65,4 +80,5 @@ module.exports = {
   calculateRentalPrice,
   carCategoryMapper,
   carCategoryName,
+  deriveCarCategory,
 };
