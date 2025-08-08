@@ -290,6 +290,19 @@ async function newOrder(req, res) {
       (data) => data.key == "order_car"
     )[0].value.car_class.name;
 
+    // Retrive car category based on price
+    let carCategory = 0;
+    const pricePerDay = req.body.meta_data.filter(
+      (data) => data.key == "order_car"
+    )[0].value.car_class.price;
+
+    const price = Number(pricePerDay);
+    if (isNaN(price)) {
+      carCategory = 3; // Default to Intermediate if price is not a number
+    } else {
+      carCategory = rentalUtility.deriveCarCategory(price);
+    }
+
     // Create a new request
     const request = new sql.Request();
 
@@ -318,7 +331,7 @@ async function newOrder(req, res) {
     request.input("IsBoosterSeat", sql.Bit, false);
     request.input("DropOffPlace", sql.NVarChar, "");
     request.input("NumberOfDays", sql.Int, daysToRent);
-    request.input("CategoryId", sql.Int, 3); //hardcoding to Intermediate for now
+    request.input("CategoryId", sql.Int, carCategory);
     request.input("Currency", sql.NVarChar, currency);
 
     // Execute the stored procedure
