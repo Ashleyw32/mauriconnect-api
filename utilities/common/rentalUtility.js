@@ -52,7 +52,10 @@ function carCategoryName(groupCode) {
 function deriveCarCategory(price) {
   let carCategory = 0;
 
-  if (price >= 18 && price < 23) {
+  if (price > 0 && price < 15) {
+    carCategory = 5; // addon category
+  }
+  if (price >= 15 && price < 23) {
     carCategory = 1; // Mini
   } else if (price >= 23 && price < 30) {
     carCategory = 2; // Eco
