@@ -1,0 +1,416 @@
+{
+  "id": 96195,
+  "parent_id": 0,
+  "status": "completed",
+  "currency": "EUR",
+  "version": "9.7.3",
+  "prices_include_tax": false,
+  "date_created": "2026-06-14T07:59:59",
+  "date_modified": "2026-06-14T08:00:00",
+  "discount_total": "0.00",
+  "discount_tax": "0.00",
+  "shipping_total": "0.00",
+  "shipping_tax": "0.00",
+  "cart_tax": "0.00",
+  "total": "207.00",
+  "total_tax": "0.00",
+  "customer_id": 0,
+  "order_key": "wc_order_3cuWiy2IZBHNQ",
+  "billing": {
+    "first_name": "Sebastian",
+    "last_name": "Łysiak",
+    "company": "",
+    "address_1": "",
+    "address_2": "",
+    "city": "",
+    "state": "",
+    "postcode": "",
+    "country": "PL",
+    "email": "sebastianlysiak01@gmail.com",
+    "phone": "+48535440459"
+  },
+  "shipping": {
+    "first_name": "",
+    "last_name": "",
+    "company": "",
+    "address_1": "",
+    "address_2": "",
+    "city": "",
+    "state": "",
+    "postcode": "",
+    "country": "",
+    "phone": ""
+  },
+  "payment_method": "cod",
+  "payment_method_title": "Pay on Arrival",
+  "transaction_id": "",
+  "customer_ip_address": "102.119.215.148",
+  "customer_user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.4 Safari/605.1.15",
+  "created_via": "checkout",
+  "customer_note": "",
+  "date_completed": "2026-06-14T08:00:00",
+  "date_paid": "2026-06-14T08:00:00",
+  "cart_hash": "9fd040429c96f61a91e492fa6deb4af0",
+  "number": "96195",
+  "meta_data": [
+    {
+      "id": 315889,
+      "key": "_billing_driver_license",
+      "value": "00145/20/1417"
+    },
+    {
+      "id": 315890,
+      "key": "is_vat_exempt",
+      "value": "no"
+    },
+    {
+      "id": 315891,
+      "key": "order_car",
+      "value": {
+        "has_car": true,
+        "option_total": 52,
+        "options_list": {
+          "695": "Additional Driver",
+          "696": "Full Protection",
+          "93146": "Car Delivery Fee"
+        },
+        "car_class": {
+          "id": 93006,
+          "variation_id": 93007,
+          "quantity": 1,
+          "name": "Hyundai Grand i10",
+          "price": "20",
+          "total": 75,
+          "subname": "or similar",
+          "payment_method": "bacs",
+          "days": 5,
+          "hours": 0,
+          "ceil_days": 5,
+          "oldData": 0
+        },
+        "options": [
+          {
+            "id": 696,
+            "quantity": 1,
+            "name": "Full Protection",
+            "price": "8",
+            "total": 40,
+            "opt_days": 5,
+            "subname": ""
+          },
+          {
+            "id": 93146,
+            "quantity": 1,
+            "name": "Car Delivery Fee",
+            "price": "12",
+            "total": 12,
+            "opt_days": 5,
+            "subname": ""
+          },
+          {
+            "id": 695,
+            "quantity": 2,
+            "name": "Additional Driver",
+            "price": 0,
+            "total": 0,
+            "opt_days": 5,
+            "subname": ""
+          }
+        ],
+        "total": "€207.00",
+        "option_ids": [
+          696,
+          93146,
+          695
+        ],
+        "oldData": 0
+      }
+    },
+    {
+      "id": 315892,
+      "key": "order_car_date",
+      "value": {
+        "pickup_location_id": 93073,
+        "pickup_location": "Hotel Delivery - East Mauritius",
+        "pickup_date": "June 15, 2026 10:00 am",
+        "calc_pickup_date": "06 15,2026 10:00",
+        "return_date": "June 19, 2026 9:00 pm",
+        "calc_return_date": "06 19,2026 21:00",
+        "return_location_id": "",
+        "return_location": "Hotel Delivery - East Mauritius",
+        "return_same": "on",
+        "pickup_location_fee": "40",
+        "return_location_fee": "",
+        "order_days": 5,
+        "order_hours": 0,
+        "ceil_days": 5,
+        "format": "F j, Y g:i a",
+        "moment_format": "MM DD, Y hh:mm a"
+      }
+    },
+    {
+      "id": 315893,
+      "key": "order_pickup_date",
+      "value": "June 15, 2026 10:00 am"
+    },
+    {
+      "id": 315894,
+      "key": "order_pickup_location",
+      "value": "Hotel Delivery - East Mauritius"
+    },
+    {
+      "id": 315895,
+      "key": "order_drop_date",
+      "value": "June 19, 2026 9:00 pm"
+    },
+    {
+      "id": 315896,
+      "key": "order_drop_location",
+      "value": "Hotel Delivery - East Mauritius"
+    },
+    {
+      "id": 315897,
+      "key": "_meta_event_id",
+      "value": "050b7323-3bfe-4b03-b4fc-02c24558bf28"
+    },
+    {
+      "id": 315898,
+      "key": "_meta_purchase_tracked_server",
+      "value": "1"
+    },
+    {
+      "id": 315899,
+      "key": "stm_order_datetime_format",
+      "value": "F j, Y g:i a"
+    },
+    {
+      "id": 315902,
+      "key": "order_pickup_date",
+      "value": "June 15, 2026 10:00 am"
+    },
+    {
+      "id": 315903,
+      "key": "order_pickup_location",
+      "value": "Hotel Delivery - East Mauritius"
+    },
+    {
+      "id": 315904,
+      "key": "order_drop_date",
+      "value": "June 19, 2026 9:00 pm"
+    },
+    {
+      "id": 315905,
+      "key": "order_drop_location",
+      "value": "Hotel Delivery - East Mauritius"
+    },
+    {
+      "id": 315906,
+      "key": "_wc_order_attribution_source_type",
+      "value": "organic"
+    },
+    {
+      "id": 315907,
+      "key": "_wc_order_attribution_referrer",
+      "value": "https://www.google.com/"
+    },
+    {
+      "id": 315908,
+      "key": "_wc_order_attribution_utm_source",
+      "value": "google"
+    },
+    {
+      "id": 315909,
+      "key": "_wc_order_attribution_utm_medium",
+      "value": "organic"
+    },
+    {
+      "id": 315910,
+      "key": "_wc_order_attribution_session_entry",
+      "value": "https://mauriconnect.com/"
+    },
+    {
+      "id": 315911,
+      "key": "_wc_order_attribution_session_start_time",
+      "value": "2026-06-14 06:39:58"
+    },
+    {
+      "id": 315912,
+      "key": "_wc_order_attribution_session_pages",
+      "value": "4"
+    },
+    {
+      "id": 315913,
+      "key": "_wc_order_attribution_session_count",
+      "value": "2"
+    },
+    {
+      "id": 315914,
+      "key": "_wc_order_attribution_user_agent",
+      "value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.4 Safari/605.1.15"
+    },
+    {
+      "id": 315915,
+      "key": "_wc_order_attribution_device_type",
+      "value": "Desktop"
+    },
+    {
+      "id": 315920,
+      "key": "stm_order_status",
+      "value": "in_rent"
+    },
+    {
+      "id": 315921,
+      "key": "_googlesitekit_ga_purchase_event_tracked",
+      "value": "1"
+    },
+    {
+      "id": 315922,
+      "key": "_meta_purchase_tracked_browser",
+      "value": "1"
+    }
+  ],
+  "line_items": [
+    {
+      "id": 2712,
+      "name": "Hyundai Grand i10 - Pay now",
+      "product_id": 93006,
+      "variation_id": 93007,
+      "quantity": 1,
+      "tax_class": "",
+      "subtotal": "155.00",
+      "subtotal_tax": "0.00",
+      "total": "155.00",
+      "total_tax": "0.00",
+      "taxes": [],
+      "meta_data": [
+        {
+          "id": 27134,
+          "key": "payment-method",
+          "value": "Pay now",
+          "display_key": "Payment method",
+          "display_value": "Pay now"
+        },
+        {
+          "id": 27162,
+          "key": "_reduced_stock",
+          "value": "1",
+          "display_key": "_reduced_stock",
+          "display_value": "1"
+        }
+      ],
+      "sku": "",
+      "price": 155,
+      "image": {
+        "id": 93009,
+        "src": "https://mauriconnect.com/wp-content/uploads/2023/12/Hyundai-Grand-i10-Mauriconnect.png"
+      },
+      "parent_name": "Hyundai Grand i10"
+    },
+    {
+      "id": 2713,
+      "name": "Full Protection",
+      "product_id": 696,
+      "variation_id": 0,
+      "quantity": 1,
+      "tax_class": "",
+      "subtotal": "40.00",
+      "subtotal_tax": "0.00",
+      "total": "40.00",
+      "total_tax": "0.00",
+      "taxes": [],
+      "meta_data": [],
+      "sku": "",
+      "price": 40,
+      "image": {
+        "id": "715",
+        "src": "https://mauriconnect.com/wp-content/uploads/2023/10/insurance.svg"
+      },
+      "parent_name": null
+    },
+    {
+      "id": 2714,
+      "name": "Car Delivery Fee",
+      "product_id": 93146,
+      "variation_id": 0,
+      "quantity": 1,
+      "tax_class": "",
+      "subtotal": "12.00",
+      "subtotal_tax": "0.00",
+      "total": "12.00",
+      "total_tax": "0.00",
+      "taxes": [],
+      "meta_data": [],
+      "sku": "",
+      "price": 12,
+      "image": {
+        "id": "",
+        "src": ""
+      },
+      "parent_name": null
+    },
+    {
+      "id": 2715,
+      "name": "Additional Driver",
+      "product_id": 695,
+      "variation_id": 0,
+      "quantity": 2,
+      "tax_class": "",
+      "subtotal": "0.00",
+      "subtotal_tax": "0.00",
+      "total": "0.00",
+      "total_tax": "0.00",
+      "taxes": [],
+      "meta_data": [
+        {
+          "id": 27163,
+          "key": "_reduced_stock",
+          "value": "2",
+          "display_key": "_reduced_stock",
+          "display_value": "2"
+        }
+      ],
+      "sku": "",
+      "price": 0,
+      "image": {
+        "id": "714",
+        "src": "https://mauriconnect.com/wp-content/uploads/2023/10/driver.svg"
+      },
+      "parent_name": null
+    }
+  ],
+  "tax_lines": [],
+  "shipping_lines": [],
+  "fee_lines": [],
+  "coupon_lines": [],
+  "refunds": [],
+  "payment_url": "https://mauriconnect.com/rental-checkout/order-pay/96195/?pay_for_order=true&key=wc_order_3cuWiy2IZBHNQ",
+  "is_editable": false,
+  "needs_payment": false,
+  "needs_processing": true,
+  "date_created_gmt": "2026-06-14T07:59:59",
+  "date_modified_gmt": "2026-06-14T08:00:00",
+  "date_completed_gmt": "2026-06-14T08:00:00",
+  "date_paid_gmt": "2026-06-14T08:00:00",
+  "currency_symbol": "€",
+  "_links": {
+    "self": [
+      {
+        "href": "https://mauriconnect.com/wp-json/wc/v3/orders/96195",
+        "targetHints": {
+          "allow": [
+            "GET",
+            "POST",
+            "PUT",
+            "PATCH",
+            "DELETE"
+          ]
+        }
+      }
+    ],
+    "collection": [
+      {
+        "href": "https://mauriconnect.com/wp-json/wc/v3/orders"
+      }
+    ]
+  }
+}
