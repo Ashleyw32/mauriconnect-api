@@ -278,6 +278,12 @@ async function newOrder(req, res) {
       const daysToRent = req.body.meta_data.filter(
         (data) => data.key == "order_car_date",
       )[0].value.order_days;
+      const pickupLocation = req.body.meta_data.filter(
+        (data) => data.key == "order_car_date",
+      )[0].value.pickup_location;
+      const returnLocation = req.body.meta_data.filter(
+        (data) => data.key == "order_car_date",
+      )[0].value.return_location;
 
       let insurance = 0;
       if (
@@ -316,6 +322,8 @@ async function newOrder(req, res) {
       request.input("ReferenceNo", sql.NVarChar, "MC-" + reference.toString());
       request.input("FlightNo", sql.NVarChar, "");
       request.input("Price", sql.NVarChar, totalPrice.toString());
+      request.input("PickupLocation", sql.NVarChar, pickupLocation);
+      request.input("DropOffPlace", sql.NVarChar, returnLocation);
       request.input(
         "SpecialRequest",
         sql.NVarChar,
@@ -331,7 +339,6 @@ async function newOrder(req, res) {
       request.input("IsGps", sql.Bit, false);
       request.input("IsCarSeat", sql.Bit, false);
       request.input("IsBoosterSeat", sql.Bit, false);
-      request.input("DropOffPlace", sql.NVarChar, "");
       request.input("NumberOfDays", sql.Int, daysToRent);
       request.input("CategoryId", sql.Int, carCategory);
       request.input("Currency", sql.NVarChar, currency);
@@ -343,6 +350,38 @@ async function newOrder(req, res) {
     }
   } catch (err) {
     logError(err);
+    res.status(500).json({ error: err.message });
+  }
+}
+
+// Generate Invoice Reference Number (TNT-YYYY-NNNNN)
+async function generateInvoiceReference(req, res) {
+  try {
+    const { customerName } = req.body;
+    const currentYear = new Date().getFullYear();
+    const yearPrefix = `TNT-${currentYear}-`;
+
+    // Get the last reference issued for the current year
+    const selectRequest = new sql.Request();
+    const lastRecord =
+      await selectRequest.query`SELECT TOP 1 invoiceReferenceNo FROM InvoiceReference WHERE invoiceReferenceNo LIKE ${yearPrefix + "%"} ORDER BY id DESC`;
+
+    let nextSequence = 1;
+    if (lastRecord.recordset.length > 0) {
+      const lastRef = lastRecord.recordset[0].invoiceReferenceNo;
+      const lastSequence = parseInt(lastRef.split("-")[2], 10);
+      nextSequence = lastSequence + 1;
+    }
+
+    const invoiceReferenceNo =
+      yearPrefix + String(nextSequence).padStart(5, "0");
+
+    // Insert the new reference for tracking
+    const insertRequest = new sql.Request();
+    await insertRequest.query`INSERT INTO InvoiceReference (invoiceReferenceNo, customername, dateissued) VALUES (${invoiceReferenceNo}, ${customerName}, ${new Date()})`;
+
+    res.status(201).json({ invoiceReferenceNo });
+  } catch (err) {
     res.status(500).json({ error: err.message });
   }
 }
@@ -375,4 +414,5 @@ module.exports = {
   cancelBooking,
   deleteBooking,
   newOrder,
+  generateInvoiceReference,
 };

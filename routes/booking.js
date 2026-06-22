@@ -8,6 +8,7 @@ const {
   //updateBooking,
   cancelBooking,
   newOrder,
+  generateInvoiceReference,
 } = require("../controllers/bookingController");
 const router = express.Router();
 
@@ -18,5 +19,6 @@ router.post("/NewBooking", authMiddleware, createBooking);
 //router.put("/:id", updateBooking);
 router.put("/CancelBooking", authMiddleware, cancelBooking);
 router.post("/NewOrder", newOrder); //New booking endpoint from Webhooks mauriconnect website
+router.post("/GenerateInvoiceReference", authMiddleware, generateInvoiceReference);
 
 module.exports = router;
